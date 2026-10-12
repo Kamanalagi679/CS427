@@ -44,6 +44,7 @@ pytest                           # expect: 54 passed
 python run_experiment.py         # one sanity-check run -> results/default_<timestamp>/
 python run_sharing_sweep.py      # the main experiment, ~2 min -> results/sharing_sweep_<timestamp>/
 python plot_sharing_sweep.py results/sharing_sweep_<timestamp>   # draws the figure
+python plot_routing_comparison.py   # draws the ADRIN vs random relay comparison figure (results/routing_comparison.png)
 ```
 
 For what each check proves and exact expected output, see `DEMO.md`. For how to interpret the sharing-sweep numbers, see `PROJECT_STATUS.md`.
