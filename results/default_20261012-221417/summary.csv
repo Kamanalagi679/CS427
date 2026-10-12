@@ -1,0 +1,2 @@
+config,seed,created,delivered,pdr,latency_mean_min,latency_median_min,energy_left_mean_j,energy_left_pct,packets_sent,dropped_full_buffer,phones_died,meetings
+default,0,10050,6053,0.6022885572139304,37.11729720799603,26.0,54975.44079999975,54.97544079999975,2997,1311,0,1147
