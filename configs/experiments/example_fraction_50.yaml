@@ -1,0 +1,5 @@
+# Example experiment file: only lists what differs from default.yaml.
+# Each phone hands over a random half of its known notebook entries at every meeting.
+sharing:
+  policy: fraction
+  level: 0.5

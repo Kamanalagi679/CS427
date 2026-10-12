@@ -1,0 +1,68 @@
+# ---------------------------------------------------------------
+# Default settings for the ADRIN2.0 replication (CS427 project)
+# Every experiment file in configs/experiments/ only needs to list
+# the values that CHANGE; everything else comes from this file.
+#
+# Source tags:  [paper] = taken from the ADRIN2.0 paper
+#               [assumption] = my own choice (paper is silent)
+# ---------------------------------------------------------------
+
+simulation:
+  n_nodes: 50          # [paper] baseline comparison uses 50 nodes
+  duration_min: 200    # [paper] 200 simulated minutes
+  seed: 0              # random seed for a single run
+  n_runs: 30           # [assumption] repeats per setting (later steps)
+
+mobility:
+  zones: [Bronx, Brooklyn, Manhattan, Queens, Staten Island]   # [paper] Fig. 7
+  move_every_min: 3      # [paper] Table 1: node movement frequency
+  anchor_period_min: 40  # [paper] Section IV: return to anchor every 40 min
+  # [paper] Fig. 7: row = current zone, column = next zone.
+  # Printed values are rounded, so the code normalises each row to sum to 1.
+  transition_matrix:
+    - [0.85,  0.054, 0.018, 0.061, 0.018]
+    - [0.051, 0.59,  0.15,  0.18,  0.038]
+    - [0.031, 0.11,  0.73,  0.12,  0.0048]
+    - [0.011, 0.067, 0.11,  0.79,  0.015]
+    - [0.066, 0.24,  0.059, 0.016, 0.62]
+
+# --- used from Step 2 onward (notebooks, meeting, forwarding) ---
+network:
+  k_copies: 3              # [paper] K = 1 or 3 in the baseline comparison
+  buffer_size: 100         # [paper] default in the performance analysis
+  messages_per_epoch: 50   # [paper] Table 1; [assumption] read as new messages per minute, whole network
+  sliding_window: 5        # [paper] Table 1 (centralized baselines; not used yet)
+  base_station_zone: Manhattan   # [assumption] paper does not say
+  # Step 3 routing (see ASSUMPTIONS.md for the reasoning behind each)
+  model_smoothing: 0.01          # [assumption] added to move counts so no move is "impossible"
+  backtrack_power: matrix        # matrix | elementwise   (paper's Eq. 5 is ambiguous)
+  require_better_than_self: true # [assumption] only hand to a phone predicted to arrive sooner
+  forwarding: adrin              # adrin | random (random = reference point for validation)
+  handoff: true                  # [assumption] sender drops its copy once passed on
+
+# How often phones in the same zone actually come into radio range.
+# The paper models 5 big zones but a tiny radio range (0.07 mile), so
+# "same zone" does NOT mean "in contact". These two numbers stand in
+# for that gap. Both are [assumption]s to be calibrated in Step 3
+# against the paper's trends (Figs. 9-13).
+contacts:
+  pair_prob_per_min: 0.02           # chance two phones in one zone meet, per minute
+  base_station_prob_per_min: 0.1    # chance a phone in the base-station zone reaches it
+
+energy:                    # [paper] Table 1 (units as printed there)
+  initial_j: 100000
+  threshold_j: 10
+  sensing_w: 0.05
+  scanning_w: 3.68
+  receive_w_per_packet: 0.31
+  transmit_w_per_packet: 0.37
+  scan_seconds_per_min: 60     # [assumption] radio scans continuously (Table 1 gives no duty cycle)
+  seconds_per_packet: 1.0      # [assumption] airtime per message sent or received
+
+# --- used from Step 4 onward: THE RESEARCH VARIABLE ---
+sharing:
+  policy: full     # full | fraction | own_trace_only | none   ('recent' planned, rejected for now)
+  level: 1.0       # fraction kept (0.0 - 1.0); meaning depends on policy
+
+output:
+  results_dir: results
